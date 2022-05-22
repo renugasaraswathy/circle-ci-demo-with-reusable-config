@@ -1,0 +1,69 @@
+version: 2.1
+
+commands:
+  deploy:
+    steps:
+      - checkout
+      - run: echo "deployment started in $CURRENT_ENV"
+      - run: echo "deployment successful"
+
+executors:
+  python-executor:
+      docker:
+        - image: "circleci/python:3.8"
+
+jobs:
+  build:
+    executor: python-executor
+    steps:
+      - checkout
+      - run: python3 src/my_sum.py
+  test:
+    parameters:
+      test_type:
+        type: string
+        default: "unit"
+    executor: python-executor
+    steps:
+      - checkout
+      - run: python -m unittest discover test/<< parameters.test_type >>
+  deploy:
+    executor: python-executor
+    steps:
+      - deploy
+
+workflows:
+  main:
+    jobs:
+      - build
+      - test:
+          name: "unit-test"
+          test_type: "unit"
+          requires:
+            - build
+      - test:
+          name: "integration-test"
+          test_type: "unit"
+          requires:
+            - build
+      - test:
+          name: "component-test"
+          test_type: "unit"
+          requires:
+            - build
+      - deploy:
+          name: "deploy-dev"
+          context: demo-dev
+          requires:
+            - unit-test
+            - integration-test
+            - component-test
+      - approve-deploy-to-prod:
+          type: approval
+          requires:
+            - deploy-dev
+      - deploy:
+          name: "deploy-prod"
+          context: demo-prod
+          requires:
+            - approve-deploy-to-prod

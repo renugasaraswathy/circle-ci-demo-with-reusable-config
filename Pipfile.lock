@@ -1,0 +1,22 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "c6ae73172a6962d02856a7a537c8e14b4b2239c334c7374693502d1b5f25d26e"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.8",
+            "test-integration": "python -m unittest test/integration_tests",
+            "test-unit": "python -m unittest test/unit_tests"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {},
+    "develop": {}
+}
