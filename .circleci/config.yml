@@ -20,13 +20,13 @@ jobs:
       - run: python3 src/my_sum.py
   test:
     parameters:
-      test_type:
+      test_folder:
         type: string
         default: "unit"
     executor: python-executor
     steps:
       - checkout
-      - run: python -m unittest discover test/<< parameters.test_type >>
+      - run: python -m unittest discover test/<< parameters.test_folder >>
   deploy:
     executor: python-executor
     steps:
@@ -38,17 +38,17 @@ workflows:
       - build
       - test:
           name: "unit-test"
-          test_type: "unit"
+          test_folder: "unit"
           requires:
             - build
       - test:
           name: "integration-test"
-          test_type: "unit"
+          test_folder: "integration"
           requires:
             - build
       - test:
           name: "component-test"
-          test_type: "unit"
+          test_folder: "component"
           requires:
             - build
       - deploy:
